@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Color Detective</string>
+    <string name="mission_title">Your Mission:</string>
+    <string name="find_color">Find something %1$s!</string>
+    <string name="found_color">Great job! You found %1$s!</string>
+    <string name="camera_permission">Camera permission is required to play Color Detective!</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="stars_earned">Stars Earned: %1$d</string>
+</resources>
+
