@@ -2,7 +2,6 @@ package com.sr.colordetective
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -36,8 +35,6 @@ class MainActivity : AppCompatActivity() {
     private var starsEarned = 0
     private var lastSuccessTime = 0L
     private val successCooldown = 2000L // 2 seconds between successes
-    
-    private var mediaPlayer: MediaPlayer? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -187,28 +184,18 @@ class MainActivity : AppCompatActivity() {
     
     private fun playSuccessSound() {
         try {
-            mediaPlayer?.release()
-            // Try to use a system sound effect
-            val soundPool = android.media.SoundPool.Builder().build()
-            val soundId = soundPool.load(this, android.R.raw.sound_effects_000, 1)
-            soundPool.setOnLoadCompleteListener { _, _, _ ->
-                soundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
-            }
+            // Use ToneGenerator for API 16+ compatibility
+            val toneGenerator = android.media.ToneGenerator(
+                android.media.AudioManager.STREAM_MUSIC,
+                100
+            )
+            toneGenerator.startTone(android.media.ToneGenerator.TONE_PROP_BEEP, 200)
             // Release after a delay
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                soundPool.release()
-            }, 2000)
+                toneGenerator.release()
+            }, 500)
         } catch (e: Exception) {
-            // Fallback: use MediaPlayer with tone generator
-            try {
-                val toneGenerator = android.media.ToneGenerator(
-                    android.media.AudioManager.STREAM_MUSIC,
-                    100
-                )
-                toneGenerator.startTone(android.media.ToneGenerator.TONE_PROP_BEEP, 200)
-            } catch (e2: Exception) {
-                e2.printStackTrace()
-            }
+            e.printStackTrace()
         }
     }
     
@@ -251,7 +238,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-        mediaPlayer?.release()
     }
     
     companion object {
